@@ -5,8 +5,7 @@ A GitHub Action that runs Black code formatter on your Python code and provides 
 ## Features
 
 - Runs Black code formatter on Python files
-- Comments on pull requests with formatting results
-- Updates existing comments instead of creating new ones
+- Flexible comment modes (replace, append, or none)
 - Configurable paths to check
 - Optional failure on formatting issues
 - Automatic Python setup
@@ -28,7 +27,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
   pull-requests: write
 
 jobs:
@@ -44,16 +42,8 @@ jobs:
           black-args: '--check --verbose'  # optional, default is '--check --verbose'
           paths: 'src tests'           # optional, default is '.'
           fail-on-error: 'true'        # optional, default is 'true'
+          comment-mode: 'replace'      # optional, default is 'replace'
 ```
-
-## Required Permissions
-
-The action needs the following permissions to work properly:
-- `contents: read` - To read the repository contents
-- `issues: write` - To create/update comments on issues
-- `pull-requests: write` - To create/update comments on pull requests
-
-These permissions should be added to your workflow file as shown in the example above.
 
 ## Inputs
 
@@ -65,6 +55,7 @@ These permissions should be added to your workflow file as shown in the example 
 | `black-args` | Space-separated Black arguments | No | '--check --verbose' |
 | `paths` | Space-separated paths to check | No | '.' |
 | `fail-on-error` | Whether to fail on formatting issues | No | 'true' |
+| `comment-mode` | Mode of commenting (append/replace/none) | No | 'replace' |
 
 ## Examples
 
@@ -82,20 +73,23 @@ These permissions should be added to your workflow file as shown in the example 
     fail-on-error: 'false'
 ```
 
-### Custom Black arguments
+### Different comment modes
 ```yaml
+# Replace existing comments (default)
 - uses: your-username/black-action@v1
   with:
-    black-args: '--check --diff --color'
+    comment-mode: 'replace'
+
+# Append new comments
+- uses: your-username/black-action@v1
+  with:
+    comment-mode: 'append'
+
+# No comments
+- uses: your-username/black-action@v1
+  with:
+    comment-mode: 'none'
 ```
-
-## How it works
-
-1. Sets up Python environment
-2. Installs Black with specified version
-3. Runs Black with custom arguments on specified paths
-4. Creates or updates a PR comment with results
-5. Fails the check if formatting issues are found (configurable)
 
 ## License
 

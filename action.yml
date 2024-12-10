@@ -27,6 +27,10 @@ inputs:
     description: 'Whether to fail the action if formatting issues are found'
     required: false
     default: 'true'
+  comment-mode:
+    description: 'Mode of commenting (append, replace or none)'
+    required: false
+    default: 'replace'
 
 runs:
   using: "composite"
@@ -72,7 +76,7 @@ runs:
         } > comment.md
 
     - name: Find existing comment
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && inputs.comment-mode == 'replace'
       uses: peter-evans/find-comment@v3
       id: find-comment
       with:
@@ -86,8 +90,8 @@ runs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body-file: comment.md
-        edit-mode: replace
-        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        edit-mode: ${{ inputs.comment-mode == 'replace' && 'replace' || 'append' }}
+        comment-id: ${{ inputs.comment-mode == 'replace' && steps.find-comment.outputs.comment-id || '' }}
         token: ${{ inputs.github-token }}
 
     - name: Check Black result
