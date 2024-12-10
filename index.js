@@ -19,7 +19,7 @@ async function run() {
     try {
         const pythonVersion = core.getInput('python-version');
         const blackVersion = core.getInput('black-version');
-        const blackArgs = core.getInput('black-args');
+        const blackArgs = core.getInput('black-args').split(' ').filter(arg => arg);
         const token = core.getInput('github-token');
         const paths = core.getInput('paths');
         const failOnError = core.getInput('fail-on-error').toLowerCase() === 'true';
@@ -37,9 +37,9 @@ async function run() {
             await exec.exec('python', ['-m', 'pip', 'install', `black==${blackVersion}`]);
             
             const targetPaths = paths.split(' ').filter(p => p);
-            blackArgs.push(...targetPaths);
+            const allArgs = [...blackArgs, ...targetPaths];
 
-            await exec.exec('black', blackArgs, {
+            await exec.exec('black', allArgs, {
                 listeners: {
                     stdout: (data) => {
                         blackOutput += data.toString();

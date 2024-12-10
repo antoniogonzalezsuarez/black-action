@@ -11,6 +11,7 @@ A GitHub Action that runs Black code formatter on your Python code and provides 
 - Optional failure on formatting issues
 - Automatic Python setup
 - Detailed formatting instructions in comments
+- Customizable Black arguments
 
 ## Usage
 
@@ -35,6 +36,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           python-version: '3.x'        # optional, default is '3.x'
           black-version: '23.12.0'     # optional, default is '23.12.0'
+          black-args: '--check --verbose'  # optional, default is '--check --verbose'
           paths: 'src tests'           # optional, default is '.'
           fail-on-error: 'true'        # optional, default is 'true'
 ```
@@ -46,6 +48,7 @@ jobs:
 | `github-token` | GitHub token for PR comments | Yes | `${{ github.token }}` |
 | `python-version` | Python version to use | No | '3.x' |
 | `black-version` | Black version to use | No | '23.12.0' |
+| `black-args` | Space-separated Black arguments | No | '--check --verbose' |
 | `paths` | Space-separated paths to check | No | '.' |
 | `fail-on-error` | Whether to fail on formatting issues | No | 'true' |
 
@@ -65,11 +68,18 @@ jobs:
     fail-on-error: 'false'
 ```
 
+### Custom Black arguments
+```yaml
+- uses: your-username/black-action@v1
+  with:
+    black-args: '--check --diff --color'
+```
+
 ## How it works
 
 1. Sets up Python environment
 2. Installs Black with specified version
-3. Runs Black in check mode on specified paths
+3. Runs Black with custom arguments on specified paths
 4. Creates or updates a PR comment with results
 5. Fails the check if formatting issues are found (configurable)
 
