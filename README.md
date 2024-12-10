@@ -26,6 +26,11 @@ on:
     paths:
       - '**.py'
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   black:
     runs-on: ubuntu-latest
@@ -40,6 +45,15 @@ jobs:
           paths: 'src tests'           # optional, default is '.'
           fail-on-error: 'true'        # optional, default is 'true'
 ```
+
+## Required Permissions
+
+The action needs the following permissions to work properly:
+- `contents: read` - To read the repository contents
+- `issues: write` - To create/update comments on issues
+- `pull-requests: write` - To create/update comments on pull requests
+
+These permissions should be added to your workflow file as shown in the example above.
 
 ## Inputs
 
