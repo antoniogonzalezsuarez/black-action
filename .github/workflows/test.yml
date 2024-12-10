@@ -1,0 +1,61 @@
+name: Test Action
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create test files
+        run: |
+          mkdir -p test_files
+          # test1.py - properly formatted
+          cat > test_files/test1.py << 'EOF'
+          def test_function():
+              print("hello world")
+          EOF
+          
+          # test2.py - intentionally poorly formatted
+          cat > test_files/test2.py << 'EOF'
+          def another_function( ):
+              return     True
+          EOF
+
+      - name: Test with default settings (replace mode)
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          paths: 'test_files/test1.py'
+          comment-mode: 'replace'
+
+      - name: Test with formatting issues (append mode)
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          paths: 'test_files/test2.py'
+          fail-on-error: 'false'
+          comment-mode: 'append'
+
+      - name: Test with no comments
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          paths: 'test_files/test1.py'
+          comment-mode: 'none'
+
+      - name: Test with different Python version
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: '3.11'
+          black-version: '23.12.0'
+          paths: 'test_files/test1.py'
+          comment-mode: 'replace'
