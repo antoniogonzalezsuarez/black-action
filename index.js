@@ -5,8 +5,12 @@ const fs = require('fs').promises;
 
 async function setupPython(version) {
     try {
-        await exec.exec('curl', ['-sL', 'https://raw.githubusercontent.com/actions/setup-python/main/dist/setup/setup-python.js', '-o', 'setup-python.js']);
-        await exec.exec('node', ['setup-python.js', '--version', version]);
+        const setupPython = require('@actions/setup-python');
+        await setupPython.default({
+            pythonVersion: version,
+            architecture: 'x64',
+            checkLatest: true
+        });
         await exec.exec('python', ['-m', 'pip', 'install', '--upgrade', 'pip']);
         return true;
     } catch (error) {
