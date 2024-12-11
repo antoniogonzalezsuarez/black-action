@@ -14,7 +14,7 @@ inputs:
   black-args:
     description: 'Black arguments to use'
     required: false
-    default: '--check --verbose'
+    default: '--check'
   github-token:
     description: 'GitHub token for commenting on PRs'
     required: true
