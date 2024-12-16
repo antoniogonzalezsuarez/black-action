@@ -17,8 +17,6 @@ jobs:
           persist-credentials: false
 
       - name: Create test files
-        with:
-          persist-credentials: false
         run: |
           mkdir -p test_files
           # test1.py - properly formatted
