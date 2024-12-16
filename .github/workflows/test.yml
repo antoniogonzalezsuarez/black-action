@@ -1,20 +1,24 @@
 name: Test Action
 on:
-  pull_request:
   push:
     branches: [main]
-
-permissions:
-  contents: read
-  pull-requests: write
+  pull_request:
+    branches: [**]
 
 jobs:
   test:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Create test files
+        with:
+          persist-credentials: false
         run: |
           mkdir -p test_files
           # test1.py - properly formatted
